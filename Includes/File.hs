@@ -7,7 +7,11 @@ module Includes.File (
     obtenerArchivo,
     filasString,
     listaString,
-    escribirArchivo
+    escribirArchivo,
+    addLineCsv,
+    imprimirFila,
+    imprimirFilas,
+    imprimirArchivo
 ) where
 import System.IO (withFile, IOMode (ReadMode), hGetContents)
 import System.IO.Unsafe (unsafePerformIO)
@@ -72,3 +76,35 @@ escribirArchivo :: FilePath -> [[[Char]]] -> IO ()
 escribirArchivo path newData = do
   let newDataStr = listaString newData
   writeFile path newDataStr
+
+addLineCsv :: FilePath -> [[Char]] -> IO ()
+addLineCsv path newData = do
+  let dataFileStr = filasString newData
+  appendFile path dataFileStr
+
+-- Imprime una lista 
+imprimirFila :: [[Char]] -> IO () -- Printea la lista
+imprimirFila row = do
+  if null row
+    then putStr "\n"
+    else
+      do
+      putStr $ head row ++ "\t"
+      imprimirFila (tail row)
+
+-- Imprime una matriz
+imprimirFilas :: [[[Char]]] -> IO ()
+imprimirFilas matrix =
+  if null matrix
+    then putStr ""
+  else
+    do
+    imprimirFila (head matrix)
+    imprimirFilas (tail matrix)
+
+-- Imprime un archivo
+imprimirArchivo :: FilePath -> IO ()
+imprimirArchivo path = do
+  file <- obtenerLineas path
+  let dataFile = arreglarString file
+  imprimirFilas dataFile

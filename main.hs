@@ -1,20 +1,39 @@
 import Includes.Auth (confirmarUsuario)
 import Includes.File (split,
-  convertirString,
-  arreglarString,
-  obtenerLineas,
-  leerArchivo,
-  obtenerArchivo,
-  filasString,
-  listaString,
-  escribirArchivo)
+    convertirString,
+    arreglarString,
+    obtenerLineas,
+    leerArchivo,
+    obtenerArchivo,
+    filasString,
+    listaString,
+    escribirArchivo,
+    addLineCsv,
+    imprimirFila,
+    imprimirFilas,
+    imprimirArchivo)
 import Control.Monad (unless, when)
-import Text.XHtml (dir)
-import System.Win32 (COORD(y))
 
+
+-------------------------------------
+
+menuBicicletas :: String -> IO ()
+menuBicicletas bicicletas = do
+  putStrLn "Bicicletas"
+  putStrLn "1- Cargar todas las bicicletas"
+  putStrLn "2- Mostrar parqueos"
+  putStrLn "3- Volver"
+  option <- getLine
+  case option of
+    "1" -> putStrLn "en espera"
+    "2" -> putStrLn "en espera"
+    "3" -> return ()
+    _ -> putStrLn "Escoja una opcion valida"
+  Control.Monad.when (option /= "3") (menuBicicletas bicicletas)
+
+-- Encargadas de crear un nuevo parqueo
 nuevoParqueo :: String -> IO ()
 nuevoParqueo parqueos = do
-  parqueos <- obtenerArchivo parqueos
   putStrLn "Ingrese el nombre del parqueo"
   nombre <- getLine
   putStrLn "Ingrese la direccion del parqueo"
@@ -25,8 +44,9 @@ nuevoParqueo parqueos = do
   equis <- getLine
   putStrLn "Ingrese las coordenadas y del parqueo"
   ye <- getLine
-  escribirArchivo "./datos/parqueos.csv" (take 1 parqueos ++ [[nombre, dir, pro, equis, ye]])
+  addLineCsv parqueos [nombre, dir, pro, equis, ye]
 
+--Muestra las opciones de parqueo
 menuParqueos :: String -> IO ()
 menuParqueos parqueos = do
   putStrLn "Parqueos"
@@ -36,7 +56,7 @@ menuParqueos parqueos = do
   option <- getLine
   case option of
     "1" -> nuevoParqueo parqueos
-    "2" -> putStrLn "En espera"
+    "2" -> imprimirArchivo parqueos
     "3" -> return ()
     _ -> putStrLn "Escoja una opcion valida"
   Control.Monad.when (option /= "3") (menuParqueos parqueos)
@@ -46,7 +66,7 @@ menuOperativo :: String -> String -> String -> IO ()
 menuOperativo parqueos bicicletas usuarios = do
     putStrLn "Menu operativo"
     putStrLn "Escoja una de las siguientes opciones"
-    putStrLn "1- Cargar y Mostrar parqueos"
+    putStrLn "1- Mostrar parqueos"
     putStrLn "2- Mostrar bicicletas"
     putStrLn "3- Cargar usuarios"
     putStrLn "4- Estadísticas"

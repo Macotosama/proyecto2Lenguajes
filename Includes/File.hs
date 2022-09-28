@@ -116,7 +116,9 @@ buscarporParqueoAux bicicletas nombre = do
   if last (head bicicletas) /= nombre then buscarporParqueoAux (tail bicicletas) nombre
   else do
     imprimirFila (head bicicletas)
-    buscarporParqueoAux (tail bicicletas) nombre
+    if tail bicicletas == [] then buscarporParqueoAux (tail bicicletas) nombre
+    else return ()
+    
   
 
 buscarPorParqueo :: FilePath -> String -> IO ()

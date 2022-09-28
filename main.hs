@@ -8,16 +8,18 @@ import Includes.File (split,
     filasString,
     listaString,
     escribirArchivo,
-    addLineCsv,
+    agregarFila,
     imprimirFila,
     imprimirFilas,
-    imprimirArchivo)
+    imprimirArchivo,
+    buscarporParqueoAux,
+    buscarPorParqueo)
 import Control.Monad (unless, when)
 
 
 -------------------------------------
 
-menuBicicletas :: String -> IO ()
+menuBicicletas :: String -> IO ()--Esto no se necesita
 menuBicicletas bicicletas = do
   putStrLn "Bicicletas"
   putStrLn "1- Cargar todas las bicicletas"
@@ -32,7 +34,7 @@ menuBicicletas bicicletas = do
   Control.Monad.when (option /= "3") (menuBicicletas bicicletas)
 
 -- Encargadas de crear un nuevo parqueo
-nuevoParqueo :: String -> IO ()
+nuevoParqueo :: String -> IO ()--No se necesita
 nuevoParqueo parqueos = do
   putStrLn "Ingrese el nombre del parqueo"
   nombre <- getLine
@@ -44,10 +46,10 @@ nuevoParqueo parqueos = do
   equis <- getLine
   putStrLn "Ingrese las coordenadas y del parqueo"
   ye <- getLine
-  addLineCsv parqueos [nombre, dir, pro, equis, ye]
+  agregarFila parqueos [nombre, dir, pro, equis, ye]
 
 --Muestra las opciones de parqueo
-menuParqueos :: String -> IO ()
+menuParqueos :: String -> IO ()--Esto no se necesita
 menuParqueos parqueos = do
   putStrLn "Parqueos"
   putStrLn "1- Cargar parqueo"
@@ -61,22 +63,31 @@ menuParqueos parqueos = do
     _ -> putStrLn "Escoja una opcion valida"
   Control.Monad.when (option /= "3") (menuParqueos parqueos)
 
+mostraBicicletas :: String -> IO ()
+mostraBicicletas bicicletas = do
+  putStrLn "Bicicletas"
+  putStrLn "Escriba el nombre del parqueo"
+  putStrLn "O escriba '#' para todas las bicicletas del sistema"
+  option <- getLine
+  if "#" == option then imprimirArchivo bicicletas
+  else putStrLn "En espera"
+
 -- Muestra el menu operativo
 menuOperativo :: String -> String -> String -> IO ()
 menuOperativo parqueos bicicletas usuarios = do
     putStrLn "Menu operativo"
     putStrLn "Escoja una de las siguientes opciones"
-    putStrLn "1- Mostrar parqueos"
+    putStrLn "1- Mostrar parqueos" 
     putStrLn "2- Mostrar bicicletas"
     putStrLn "3- Cargar usuarios"
     putStrLn "4- Estadísticas"
     putStrLn "5- Volver"
     option <- getLine
     case option of  
-        "1" -> menuParqueos parqueos
-        "2" -> putStrLn "Escoja una opcion valida"
+        "1" -> imprimirArchivo parqueos
+        "2" -> mostraBicicletas bicicletas
         "3" -> putStrLn "Escoja una opcion valida"
-        "4" -> putStrLn "Escoja una opcion valida"
+        "4" -> imprimirArchivo usuarios
         "5" -> return ()
         _ -> putStrLn "Escoja una opcion valida"
     Control.Monad.when (option /= "5") (menuOperativo parqueos bicicletas usuarios)

@@ -8,10 +8,12 @@ module Includes.File (
     filasString,
     listaString,
     escribirArchivo,
-    addLineCsv,
+    agregarFila,
     imprimirFila,
     imprimirFilas,
-    imprimirArchivo
+    imprimirArchivo,
+    buscarporParqueoAux,
+    buscarPorParqueo
 ) where
 import System.IO (withFile, IOMode (ReadMode), hGetContents)
 import System.IO.Unsafe (unsafePerformIO)
@@ -77,8 +79,8 @@ escribirArchivo path newData = do
   let newDataStr = listaString newData
   writeFile path newDataStr
 
-addLineCsv :: FilePath -> [[Char]] -> IO ()
-addLineCsv path newData = do
+agregarFila :: FilePath -> [[Char]] -> IO ()
+agregarFila path newData = do
   let dataFileStr = filasString newData
   appendFile path dataFileStr
 
@@ -108,3 +110,19 @@ imprimirArchivo path = do
   file <- obtenerLineas path
   let dataFile = arreglarString file
   imprimirFilas dataFile
+
+buscarporParqueoAux :: [[[Char]]] -> [Char] -> IO ()
+buscarporParqueoAux bicicletas nombre = do
+  if last (head bicicletas) /= nombre then buscarporParqueoAux (tail bicicletas) nombre
+  else do
+    imprimirFila (head bicicletas)
+    buscarporParqueoAux (tail bicicletas) nombre
+  
+
+buscarPorParqueo :: FilePath -> String -> IO ()
+buscarPorParqueo path nombre = do 
+  bicicletas <- obtenerLineas path
+  alquiler <- obtenerLineas "./datos/alquiler.csv"
+  let datosBicicletas = arreglarString bicicletas
+  let datosAlquiler = arreglarString alquiler
+  buscarporParqueoAux datosBicicletas nombre

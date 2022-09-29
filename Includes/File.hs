@@ -113,13 +113,13 @@ imprimirArchivo path = do
 
 buscarporParqueoAux :: [[[Char]]] -> [Char] -> IO ()
 buscarporParqueoAux bicicletas nombre = do
-  if last (head bicicletas) /= nombre then buscarporParqueoAux (tail bicicletas) nombre
+  if null bicicletas then putStrLn "No existe bicicleta en el parqueo indicado"
   else do
-    imprimirFila (head bicicletas)
-    if tail bicicletas == [] then buscarporParqueoAux (tail bicicletas) nombre
-    else return ()
-    
-  
+    if last (head bicicletas) /= nombre then buscarporParqueoAux (tail bicicletas) nombre
+    else do
+      imprimirFila (head bicicletas)
+      if tail bicicletas == [] then buscarporParqueoAux (tail bicicletas) nombre
+      else return ()
 
 buscarPorParqueo :: FilePath -> String -> IO ()
 buscarPorParqueo path nombre = do 

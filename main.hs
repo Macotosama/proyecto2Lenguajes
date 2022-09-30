@@ -94,11 +94,8 @@ facturar = do
   nTipoDeBici <- getLine
 
 
-  --let infoAlquiler = regresarAlquilerActivo [alquileresArchivo] nIdAlquilerPasword
-    
+
   escribirArchivo "./datos/facturas.csv" ([archivoFacturas] ++ [infoNegocio]++[[nIdAlquilerPasword++nTipoDeBici]]++(regresarAlquilerActivo [alquileresArchivo] nIdAlquilerPasword)++[[show(elegirTarifaTienda nTipoDeBici nCantidadDeKilometros)]]) --falta agregar la informacion extraida del alquiler
-  --else 
-    --return ()
 
 
   
